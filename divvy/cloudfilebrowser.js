@@ -195,6 +195,10 @@ var provision = (function() {
             server.list(_provision.getTokenForElement(element), path, cb, cbArgs);
         },
 
+        searchDocuments: function(element, path, keyword, cb, cbArgs) {
+            server.search(_provision.getTokenForElement(element), path, keyword, cb, cbArgs);
+        },
+
         createInstance: function(element, cb, cbArgs) {
 
             //Step 1 : Check if the element token is present, if so list the documents
@@ -466,6 +470,16 @@ var server = (function() {
                 this.authHeader(CloudElements.getUTkn(), CloudElements.getOTkn(), tkn), params, cb, cbArgs);
         },
 
+        search: function(tkn, path, keyword, cb, cbArgs) {
+            var params = {
+                'path': path,
+                'text': keyword,
+            }
+
+            _server.call('api-v2/hubs/documents/search', 'Get',
+                this.authHeader(CloudElements.getUTkn(), CloudElements.getOTkn(), tkn), params, cb, cbArgs);
+        },
+
         _downloadCallback: function(data) {
             var hiddenIFrameID = 'hiddenDownloader',
                 iframe = document.getElementById(hiddenIFrameID);
@@ -720,6 +734,69 @@ var cloudFileBrowser = (function() {
             }
         },
 
+        escapeApostrophe: function(keyword) {
+            return keyword.replace('\'','\\\'');
+        },
+
+        performSearch: function(keyword, element, path) {
+            var callbackArgs = {
+                'element' : element,
+                'path' : '/'
+            };
+
+            cloudFileBrowser.showLoading();
+
+            // when there are no keywords or if its undefined
+            // the default operation would be to display the documents
+            // inside the root path
+            // In most cases, when searching is not performed keyword is undefined.
+            // The user might be able to press enter and search for a blank keyword for ex: ''
+            // For that we still display the documents inside root path
+
+            if(keyword === undefined || keyword === '') {
+                provision.getDocuments(element, '/', function(data, cbArgs) {
+                    cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path, keyword);
+                }, callbackArgs);
+            } else {
+                var escapedKeyword = this.escapeApostrophe(keyword);
+                provision.searchDocuments(element, path, escapedKeyword, function(data, cbArgs) {
+                    cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path, keyword);
+                }, callbackArgs);
+            }
+        },
+
+        disableSearchOpen: function() {
+            $('#js-search-open').disabled = true;
+            $('#js-search-open').css('cursor', 'default');
+        },
+
+        enableSearchOpen: function () {
+            $('#js-search-open').disabled = false;
+            $('#js-search-open').css('cursor', 'pointer');
+        },
+
+        bindSearchBox: function(element, path) {
+            var self = this;
+            $('#js-search-open').on('click', function() {
+                $('#js-search-box-form-wrapper').show();
+                self.disableSearchOpen();
+            });
+
+            $('#js-search-box').on('keypress', function(event) {
+                // 13 is keyCode for enter
+                if(event.keyCode === 13) {
+                    var keyword = $(this).val();
+                    self.performSearch(keyword, element, path);
+                }
+            });
+
+            $('#js-search-close').on('click', function() {
+                $('#js-search-box-form-wrapper').hide();
+                $('#js-search-box').val('');
+                self.enableSearchOpen();
+            });
+        },
+
         buildDomEls: function(selector, cb) {
 
             var HTML = '<section id="tab-container"><ul id="services-tabs"></ul><section id="services-containers"></section></section><section id="loading"><span><i></i></span></section><section id="error"></section>';
@@ -911,12 +988,15 @@ var cloudFileBrowser = (function() {
             }, callbackArgs);
         },
 
-        drawEl: function(data, element, path) {
+        drawEl: function(data, element, path, keyword) {
             // Clean up load screen
             cloudFileBrowser.hideLoading();
 
 
             $('div.' + element + ' .listTable, div.' + element + ' .breadcrumb').remove();
+
+            // remove search wrapper
+            $('.search-wrapper').remove();
 
             // Call for table from helper class
             var tableHTML = this.buildTable(data, true, path, element);
@@ -924,21 +1004,35 @@ var cloudFileBrowser = (function() {
             // Append data returned and start screen adjustment via CSS3 class
             $(container + ' .' + element).addClass('provisioned').append(tableHTML);
 
+            if(keyword !== '' && keyword !== undefined) {
+                this.disableSearchOpen();
+                $("#js-search-box-form-wrapper").show();
+                $('#js-search-box').val(keyword);
+            }            
+
             this.animateTable(element);
             this.bindFileDragDrop(element, path);
             this.bindAddFiles(element, path);
             this.bindBreadCrumbClick(element);
             this.bindFileInfo(element);
+            this.bindSearchBox(element, path);
         },
 
         buildTable: function(data, isNew, path, element) {
-
             if (isNew == true) {
 
                 var tableHTML = '',
                     trailingpath;
 
                 cloudFileBrowser.selectedFiles[element] = new Array();
+
+                tableHTML += '<div class="search-wrapper">' +
+                                '<button id="js-search-open" class="search-open"><i class="fa fa-search fa-flip-horizontal" aria-hidden="true"></i></button>' +
+                                '<span class="search-box-form-wrapper" id="js-search-box-form-wrapper">' +
+                                '<input type="text" id="js-search-box" class="search-box" placeholder="Search..."/>' +
+                                '<button id="js-search-close" class="search-close"><i class="fa fa-times-circle search-close" aria-hidden="true"></i></button>' +
+                                '</span>' +
+                                '</div>';
 
                 tableHTML += '<div class="breadcrumb"><ul>';
 
