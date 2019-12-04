@@ -215,10 +215,10 @@ var provision = (function() {
                 // if onedrivebusiness
                 if (element === 'onedrivebusiness') {
                     var siteAddress = cbArgs.siteAddress;
-                    if (siteAddress === null || siteAddress === "") {
-                        return
-                    } else {
+                    if (!!siteAddress) {
                         elementDetails.siteAddress = siteAddress;
+                    } else {
+                        return;
                     }
                 }
                 
@@ -624,6 +624,8 @@ var server = (function() {
             };
 
             if (element === 'onedrivebusiness') {
+                // This provision configuration are onedrive specific
+                // This is also where we inject a specific account's siteAddress
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["onedrivebusiness.site.address"] = cbArgs.elementDetails.siteAddress;
