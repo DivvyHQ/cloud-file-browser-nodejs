@@ -56,8 +56,24 @@ the License.
         margin-top: 65px;
         padding: 7px 14px;
         text-decoration: none;
-        top: 50%;
+        top: 58%;
         width: 210px;
+    }
+
+    a[aria-element="onedrivebusiness"] {
+        top: 58%;
+    }
+
+    div.site-address-wrap {
+        position: absolute;
+        display: inline-block;
+        left: 50%;
+        margin-left: -120px;
+        margin-top: 36px;
+        padding: 7px 14px;
+        text-decoration: none;
+        top: 47%;
+        width: 247px;
     }
 
     .disable-element {
@@ -405,6 +421,8 @@ the License.
     }
 
     #services-containers > div.provisioned > a.provision { display: none }
+
+    #services-containers > div.provisioned > div.site-address-wrap { display: none }
 
     #services-containers > div.provisioned > div.search-wrapper {
         height: 38px;

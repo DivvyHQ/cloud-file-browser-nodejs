@@ -212,6 +212,16 @@ var provision = (function() {
             var elementDetails = _provision.getElementDetails(element);
             if(elementDetails != null && elementDetails != undefined) {
 
+                // if onedrivebusiness
+                if (element === 'onedrivebusiness') {
+                    var siteAddress = cbArgs.siteAddress;
+                    if (!!siteAddress) {
+                        elementDetails.siteAddress = siteAddress;
+                    } else {
+                        return;
+                    }
+                }
+                
                 var win = window.open('', '_target');
 
                 var callbackArgs = {
@@ -235,7 +245,6 @@ var provision = (function() {
         },
 
         processNextOnCallback: function(queryparams) {
-
             var pageParameters = _provision.getParamsFromURI(queryparams);
             var not_approved= pageParameters.not_approved;
 
@@ -249,7 +258,8 @@ var provision = (function() {
             var cbArgs = {
                 'element' : ele,
                 'cbFun'   : lastCallbackArgs.cbFun,
-                'cbArgs'  : lastCallbackArgs.cbArgs
+                'cbArgs'  : lastCallbackArgs.cbArgs,
+                'elementDetails': lastCallbackArgs.elementDetails
             };
 
             //Provision the element and get elementToken
@@ -333,7 +343,6 @@ var server = (function() {
 
             if(server.isNullAndUndef(methodtype))
                 methodtype = 'Get';
-
             var proxy = $.ajax({
                 url: server.getUrl(path),
                 type: methodtype,
@@ -347,7 +356,6 @@ var server = (function() {
                     cb(data, cbArgs);
                 else
                     cb(data.results, cbArgs);
-
             })
             .fail(function(data){
                 _server.handleFailure(data, cb, cbArgs);
@@ -463,7 +471,7 @@ var server = (function() {
         list: function(tkn, path, cb, cbArgs) {
             var params = {
                 'path' : path,
-                'orderBy' : 'modifiedDate desc'
+                'orderBy': 'modifiedDate desc'
             }
 
             _server.call('api-v2/hubs/documents/folders/contents', 'Get',
@@ -586,17 +594,20 @@ var server = (function() {
                 'elementKeyOrId': element,
                 'apiKey' : apiKey,
                 'apiSecret': apiSec,
-                'callbackUrl': callbackUrl
+                'callbackUrl': callbackUrl,
             };
 
-
+            if (element === 'onedrivebusiness') {
+                // We get the siteAddress from element detail
+                // after provisioning
+                parameters.siteAddress = cbArgs.elementDetails.siteAddress;
+            }
 
             _server.call('api-v2/elements/'+element+'/oauth/url', 'Get',
                 this.authHeader(CloudElements.getUTkn(), CloudElements.getOTkn(), null), parameters, cb, cbArgs);
         },
 
         createInstance: function(element, code, apiKey, apiSec, callbackUrl, cb, cbArgs) {
-
             var elementProvision = {
                 'configuration': {
                     'oauth.api.key' : apiKey,
@@ -611,6 +622,14 @@ var server = (function() {
                 },
                 'name': element
             };
+
+            if (element === 'onedrivebusiness') {
+                // This provision configuration are onedrive specific
+                // This is also where we inject a specific account's siteAddress
+                elementProvision.configuration["document.tagging"] = true;
+                elementProvision.configuration["filter.response.nulls"] = true;
+                elementProvision.configuration["onedrivebusiness.site.address"] = cbArgs.elementDetails.siteAddress;
+            }
 
             _server.call('api-v2/instances', 'POST',
                 this.authHeader(CloudElements.getUTkn(), CloudElements.getOTkn(), null), JSON.stringify(elementProvision), cb, cbArgs);
@@ -813,11 +832,21 @@ var cloudFileBrowser = (function() {
 
             for (var i=0; i<services.length; i++) {
                 tabsHTML += '<li class="' + services[i] + (i == 0 ? ' on' : '' )+ '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
-                containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
-                                    '<h2></h2>' +
-                                    '<h2><img src="' + servicesImages[i] + '"></h2>' +
-                                    '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
-                                    '</div>';
+                if (services[i] !== 'onedrivebusiness') {
+                    containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
+                    '<h2></h2>' +
+                    '<h2><img src="' + servicesImages[i] + '"></h2>' +
+                    '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
+                    '</div>';
+                } else {
+                    containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
+                    '<h2></h2>' +
+                    '<h2><img src="' + servicesImages[i] + '"></h2>' +
+                    '<div class="site-address-wrap"><p>OneDrive Business Site Addresss (domain-my.sharepoint.com)</p>' +
+                    '<input type="text" id="site-address"/></div>' +
+                    '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
+                    '</div>';
+                }
             }
 
             $(tabs).append(tabsHTML);
@@ -826,7 +855,8 @@ var cloudFileBrowser = (function() {
 
         initElement: function(element) {
             var callbackArgs = {
-                'element' : element
+                'element' : element,
+                'siteAddress': $(container).find('input').val()
             };
 
             if (provision.isAuthorized(element)) {
@@ -969,7 +999,8 @@ var cloudFileBrowser = (function() {
             cloudFileBrowser.showLoading();
 
             var callbackArgs = {
-                'element' : element
+                'element' : element,
+                'siteAddress': $(container).find('input').val()
             };
             provision.createInstance(element, cloudFileBrowser.handleOnProvision, callbackArgs);
         },
