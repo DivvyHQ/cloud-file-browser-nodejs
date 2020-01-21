@@ -1004,6 +1004,8 @@ var cloudFileBrowser = (function() {
                 'element' : element,
                 'siteAddress': $(container).find('input').val()
             };
+            console.log("siteAddress??");
+            debugger;
             provision.createInstance(element, cloudFileBrowser.handleOnProvision, callbackArgs);
         },
 
