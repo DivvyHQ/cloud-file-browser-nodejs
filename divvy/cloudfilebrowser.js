@@ -233,7 +233,6 @@ var provision = (function() {
                     'elementDetails': elementDetails
                 }
 
-                debugger;
                 server.getOAuthUrlOnAPIKey(element, elementDetails.apiKey, elementDetails.apiSecret,
                     elementDetails.callbackUrl, provision.handleOnGetOAuthUrl, callbackArgs);
 
@@ -1002,10 +1001,8 @@ var cloudFileBrowser = (function() {
 
             var callbackArgs = {
                 'element' : element,
-                'siteAddress': $(container).find('input').val()
+                'siteAddress': $(container).find('#site-address').val()
             };
-            console.log("siteAddress??");
-            debugger;
             provision.createInstance(element, cloudFileBrowser.handleOnProvision, callbackArgs);
         },
 
