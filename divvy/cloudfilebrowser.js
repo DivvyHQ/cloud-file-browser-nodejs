@@ -216,11 +216,10 @@ var provision = (function() {
                 if (element === 'onedrivebusiness') {
                     console.log('is onedrive');
                     var siteAddress = cbArgs.siteAddress;
-                    if (!!siteAddress) {
-                        elementDetails.siteAddress = siteAddress;
-                        console.log('pass siteAddress');
+                    if (siteAddress === null || siteAddress === "") {
+                        console.log('Need a siteAddress');
                     } else {
-                        return;
+                        elementDetails.siteAddress = siteAddress;
                     }
                 }
                 
