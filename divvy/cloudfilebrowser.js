@@ -1000,7 +1000,7 @@ var cloudFileBrowser = (function() {
 
             var callbackArgs = {
                 'element' : element,
-                'siteAddress': $(container).find('input').val()
+                'siteAddress': $(container).find('#site-address').val()
             };
             provision.createInstance(element, cloudFileBrowser.handleOnProvision, callbackArgs);
         },
