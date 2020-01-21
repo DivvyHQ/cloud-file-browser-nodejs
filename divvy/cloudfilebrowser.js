@@ -213,14 +213,14 @@ var provision = (function() {
             if(elementDetails != null && elementDetails != undefined) {
 
                 // if onedrivebusiness
-                if (element === 'onedrivebusiness') {
-                    var siteAddress = cbArgs.siteAddress;
-                    if (!!siteAddress) {
-                        elementDetails.siteAddress = siteAddress;
-                    } else {
-                        return;
-                    }
-                }
+                // if (element === 'onedrivebusiness') {
+                //     var siteAddress = cbArgs.siteAddress;
+                //     if (!!siteAddress) {
+                //         elementDetails.siteAddress = siteAddress;
+                //     } else {
+                //         return;
+                //     }
+                // }
                 
                 var win = window.open('', '_target');
 
