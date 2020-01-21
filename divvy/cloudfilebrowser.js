@@ -213,14 +213,16 @@ var provision = (function() {
             if(elementDetails != null && elementDetails != undefined) {
 
                 // if onedrivebusiness
-                // if (element === 'onedrivebusiness') {
-                //     var siteAddress = cbArgs.siteAddress;
-                //     if (!!siteAddress) {
-                //         elementDetails.siteAddress = siteAddress;
-                //     } else {
-                //         return;
-                //     }
-                // }
+                if (element === 'onedrivebusiness') {
+                    console.log('is onedrive');
+                    var siteAddress = cbArgs.siteAddress;
+                    if (!!siteAddress) {
+                        elementDetails.siteAddress = siteAddress;
+                        console.log('pass siteAddress');
+                    } else {
+                        return;
+                    }
+                }
                 
                 var win = window.open('', '_target');
 
@@ -232,6 +234,7 @@ var provision = (function() {
                     'elementDetails': elementDetails
                 }
 
+                debugger;
                 server.getOAuthUrlOnAPIKey(element, elementDetails.apiKey, elementDetails.apiSecret,
                     elementDetails.callbackUrl, provision.handleOnGetOAuthUrl, callbackArgs);
 
