@@ -598,12 +598,12 @@ var server = (function() {
                 'callbackUrl': callbackUrl,
             };
 
-            if (element === 'onedrivebusiness') {
+            if (element === 'onedrivebusiness' || element === 'sharepoint') {
                 // We get the siteAddress from element detail
                 // after provisioning
                 parameters.siteAddress = cbArgs.elementDetails.siteAddress;
             }
-            debugger;
+
             _server.call('api-v2/elements/'+element+'/oauth/url', 'Get',
                 this.authHeader(CloudElements.getUTkn(), CloudElements.getOTkn(), null), parameters, cb, cbArgs);
         },
