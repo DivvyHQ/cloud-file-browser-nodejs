@@ -103,6 +103,7 @@ var CloudElements = (function() {
             }
 
             server.providers(CloudElements.initCallback);
+            debugger;
         },
 
         initCallback: function(data, cbArgs) {
@@ -210,11 +211,11 @@ var provision = (function() {
 
             //Step 2 : Check if API Key and Secret Exists, create an instance using those keys
             var elementDetails = _provision.getElementDetails(element);
-            debugger;
+
             if(elementDetails != null && elementDetails != undefined) {
 
                 // if onedrivebusiness
-                if (element === 'onedrivebusiness' || element === 'sharepointg') {
+                if (element === 'onedrivebusiness') {
                     var siteAddress = cbArgs.siteAddress;
                     if (!!siteAddress) {
                         elementDetails.siteAddress = siteAddress;
