@@ -210,6 +210,7 @@ var provision = (function() {
 
             //Step 2 : Check if API Key and Secret Exists, create an instance using those keys
             var elementDetails = _provision.getElementDetails(element);
+
             if(elementDetails != null && elementDetails != undefined) {
 
                 // if onedrivebusiness
