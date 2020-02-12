@@ -214,7 +214,7 @@ var provision = (function() {
             if(elementDetails != null && elementDetails != undefined) {
 
                 // if onedrivebusiness
-                if (element === 'onedrivebusiness' || element === 'sharepoint') {
+                if (element === 'onedrivebusiness') {
                     var siteAddress = cbArgs.siteAddress;
                     if (!!siteAddress) {
                         elementDetails.siteAddress = siteAddress;
@@ -835,7 +835,7 @@ var cloudFileBrowser = (function() {
             console.log('services in builtTabs: ', services);
             for (var i=0; i<services.length; i++) {
                 tabsHTML += '<li class="' + services[i] + (i == 0 ? ' on' : '' )+ '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
-                if (services[i] !== 'onedrivebusiness' || services[i] !== 'sharepoint') {
+                if (services[i] !== 'onedrivebusiness' && services[i] !== 'sharepoint') {
                     containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + servicesImages[i] + '"></h2>' +
