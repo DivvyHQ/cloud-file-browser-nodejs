@@ -214,7 +214,7 @@ var provision = (function() {
             if(elementDetails != null && elementDetails != undefined) {
 
                 // if onedrivebusiness
-                if (element === 'onedrivebusiness') {
+                if (element === 'onedrivebusiness' || element === 'sharepoint') {
                     var siteAddress = cbArgs.siteAddress;
                     if (!!siteAddress) {
                         elementDetails.siteAddress = siteAddress;
@@ -693,7 +693,9 @@ var cloudFileBrowser = (function() {
     return {
 
         init: function(srvs, srvsDis, srvsImages) {
-
+            console.log('srvs: ', srvs);
+            console.log('srvsDis: ', srvsDis);
+            console.log('srvsImages: ', srvsImages);
             // Initialize FilePicker script and build DOM elements
             // and setup binding methods
             services = srvs;
@@ -830,20 +832,24 @@ var cloudFileBrowser = (function() {
 
             var tabsHTML = '',
                 containerHTML = '';
-
+            console.log('services in builtTabs: ', services);
             for (var i=0; i<services.length; i++) {
                 tabsHTML += '<li class="' + services[i] + (i == 0 ? ' on' : '' )+ '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
-                if (services[i] !== 'onedrivebusiness') {
+                if (services[i] !== 'onedrivebusiness' || services[i] !== 'sharepoint') {
                     containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + servicesImages[i] + '"></h2>' +
                     '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
                     '</div>';
                 } else {
+                    text = 'OneDrive Business Site Addresss';
+                    if (services[i] === 'sharepoint') {
+                        text = 'Share Point Site Addresss'
+                    }
                     containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + servicesImages[i] + '"></h2>' +
-                    '<div class="site-address-wrap"><p>OneDrive Business Site Addresss (domain-my.sharepoint.com)</p>' +
+                    '<div class="site-address-wrap"><p>' + text + ' (domain-my.sharepoint.com)</p>' +
                     '<input type="text" id="site-address"/></div>' +
                     '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
                     '</div>';
