@@ -210,10 +210,11 @@ var provision = (function() {
 
             //Step 2 : Check if API Key and Secret Exists, create an instance using those keys
             var elementDetails = _provision.getElementDetails(element);
+            debugger;
             if(elementDetails != null && elementDetails != undefined) {
 
                 // if onedrivebusiness
-                if (element === 'onedrivebusiness') {
+                if (element === 'onedrivebusiness' || element === 'sharepointg') {
                     var siteAddress = cbArgs.siteAddress;
                     if (!!siteAddress) {
                         elementDetails.siteAddress = siteAddress;
