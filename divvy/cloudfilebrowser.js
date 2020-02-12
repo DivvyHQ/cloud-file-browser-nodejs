@@ -602,7 +602,7 @@ var server = (function() {
                 // after provisioning
                 parameters.siteAddress = cbArgs.elementDetails.siteAddress;
             }
-
+            debugger;
             _server.call('api-v2/elements/'+element+'/oauth/url', 'Get',
                 this.authHeader(CloudElements.getUTkn(), CloudElements.getOTkn(), null), parameters, cb, cbArgs);
         },
