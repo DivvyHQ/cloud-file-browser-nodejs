@@ -842,7 +842,7 @@ var cloudFileBrowser = (function() {
                     '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
                     '</div>';
                 } else {
-                    text = 'OneDrive Business Site Addresss';
+                    var text = 'OneDrive Business Site Addresss';
                     if (services[i] === 'sharepoint') {
                         text = 'Share Point Site Addresss'
                     }
