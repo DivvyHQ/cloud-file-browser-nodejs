@@ -624,6 +624,8 @@ var server = (function() {
                 'name': element
             };
 
+            debugger;
+
             if (element === 'onedrivebusiness' || element === 'sharepoint') {
                 // This provision configuration are onedrive specific
                 // This is also where we inject a specific account's siteAddress
