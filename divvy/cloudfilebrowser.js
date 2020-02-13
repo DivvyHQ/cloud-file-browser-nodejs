@@ -214,7 +214,7 @@ var provision = (function() {
             if(elementDetails != null && elementDetails != undefined) {
 
                 // if onedrivebusiness
-                if (element === 'onedrivebusiness') {
+                if (element === 'onedrivebusiness' || element === 'sharepoint') {
                     var siteAddress = cbArgs.siteAddress;
                     if (!!siteAddress) {
                         elementDetails.siteAddress = siteAddress;
@@ -843,13 +843,15 @@ var cloudFileBrowser = (function() {
                     '</div>';
                 } else {
                     var text = 'OneDrive Business Site Addresss';
+                    var spacing = '';
                     if (services[i] === 'sharepoint') {
-                        text = 'Share Point Site Addresss'
+                        text = 'Share Point Site Addresss';
+                        spacing = '</br>';
                     }
                     containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + servicesImages[i] + '"></h2>' +
-                    '<div class="site-address-wrap"><p>' + text + ' (domain-my.sharepoint.com)</p>' +
+                    '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
                     '<input type="text" id="site-address"/></div>' +
                     '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
                     '</div>';
