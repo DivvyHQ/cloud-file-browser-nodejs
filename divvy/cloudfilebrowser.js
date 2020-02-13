@@ -624,7 +624,7 @@ var server = (function() {
                 'name': element
             };
 
-            debugger;
+            console.log(elementProvision, 'elementProvision');
 
             if (element === 'onedrivebusiness' || element === 'sharepoint') {
                 // This provision configuration are onedrive specific
