@@ -241,7 +241,6 @@ var provision = (function() {
         },
 
         handleOnGetOAuthUrl: function(data, cbArgs) {
-            debugger;
             lastCallbackArgs = cbArgs;
             cbArgs.win.location.href = data.oauthUrl;
         },
