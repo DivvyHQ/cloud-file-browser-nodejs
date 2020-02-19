@@ -627,12 +627,14 @@ var server = (function() {
             console.log(elementProvision, 'elementProvision');
 
             if (element === 'onedrivebusiness') {
+                console.log('inside onedrive', element, 'element');
                 // This provision configuration are onedrive specific
                 // This is also where we inject a specific account's siteAddress
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["onedrivebusiness.site.address"] = cbArgs.elementDetails.siteAddress;
             } else if (element === 'sharepoint') {
+                console.log('inside sharepoint', element, 'element');
                 elementProvision.configuration["oauth.scope"] = "AllSites.Manage";
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
