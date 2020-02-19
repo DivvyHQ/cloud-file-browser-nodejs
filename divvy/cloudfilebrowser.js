@@ -631,13 +631,12 @@ var server = (function() {
                 // This is also where we inject a specific account's siteAddress
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
-                elementProvision.configuration[element + ".site.address"] = cbArgs.elementDetails.siteAddress;
-            }
-            if (element === 'sharepoint') {
+                elementProvision.configuration["onedrivebusiness.site.address"] = cbArgs.elementDetails.siteAddress;
+            } else if (element === 'sharepoint') {
                 elementProvision.configuration["oauth.scope"] = "AllSites.Manage";
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
-                elementProvision.configuration[element + ".site.address"] = cbArgs.elementDetails.siteAddress;
+                elementProvision.configuration["sharepoint.site.address"] = cbArgs.elementDetails.siteAddress;
             }
 
             _server.call('api-v2/instances', 'POST',
