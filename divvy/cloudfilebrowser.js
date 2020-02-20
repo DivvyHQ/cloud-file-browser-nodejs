@@ -624,17 +624,13 @@ var server = (function() {
                 'name': element
             };
 
-            console.log(elementProvision, 'elementProvision');
-            console.log(element, 'elementary');
             if (element === 'onedrivebusiness') {
-                console.log('inside onedrive', element, 'element');
                 // This provision configuration are onedrive specific
                 // This is also where we inject a specific account's siteAddress
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["onedrivebusiness.site.address"] = cbArgs.elementDetails.siteAddress;
             } else if (element === 'sharepoint') {
-                console.log('inside sharepoint', element, 'element');
                 elementProvision.configuration["oauth.scope"] = "AllSites.Manage";
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
@@ -702,9 +698,6 @@ var cloudFileBrowser = (function() {
     return {
 
         init: function(srvs, srvsDis, srvsImages) {
-            console.log('srvs: ', srvs);
-            console.log('srvsDis: ', srvsDis);
-            console.log('srvsImages: ', srvsImages);
             // Initialize FilePicker script and build DOM elements
             // and setup binding methods
             services = srvs;
@@ -841,7 +834,6 @@ var cloudFileBrowser = (function() {
 
             var tabsHTML = '',
                 containerHTML = '';
-            console.log('services in builtTabs: ', services);
             for (var i=0; i<services.length; i++) {
                 tabsHTML += '<li class="' + services[i] + (i == 0 ? ' on' : '' )+ '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
                 if (services[i] !== 'onedrivebusiness' && services[i] !== 'sharepoint') {
