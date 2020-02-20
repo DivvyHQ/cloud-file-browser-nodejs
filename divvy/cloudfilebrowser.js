@@ -625,7 +625,7 @@ var server = (function() {
             };
 
             console.log(elementProvision, 'elementProvision');
-
+            console.log(element, 'elementary');
             if (element === 'onedrivebusiness') {
                 console.log('inside onedrive', element, 'element');
                 // This provision configuration are onedrive specific
