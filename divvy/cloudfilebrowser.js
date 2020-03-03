@@ -27,11 +27,11 @@ var CloudElements = (function() {
         uSec = null, aKey = null, envUrl=null,
         ceconfig =null, notif = null, callback=null,
         servicemapping = {
-            'sharepoint': 'SharePoint',
             'box' : 'Box',
             'dropbox': 'Dropbox',
             'googledrive': 'Google Drive',
-            'onedrive': 'OneDrive'
+            'onedrive': 'OneDrive',
+            'sharepoint': 'SharePoint',
         };
 
     return {
@@ -674,6 +674,7 @@ the License.
     'use strict';
     var exports = module.exports = {};
     $.fn.cloudFileBrowser = function(options) {
+        console.log(options, 'OPTIONOENS');
         cloudFileBrowser.buildDomEls(this, function() {
              CloudElements.init(options);
         });
