@@ -27,11 +27,11 @@ var CloudElements = (function() {
         uSec = null, aKey = null, envUrl=null,
         ceconfig =null, notif = null, callback=null,
         servicemapping = {
+            'sharepoint': 'SharePoint',
             'box' : 'Box',
             'dropbox': 'Dropbox',
             'googledrive': 'Google Drive',
-            'onedrive': 'OneDrive',
-            'sharepoint': 'SharePoint'
+            'onedrive': 'OneDrive'
         };
 
     return {
@@ -698,7 +698,6 @@ var cloudFileBrowser = (function() {
     return {
 
         init: function(srvs, srvsDis, srvsImages) {
-            console.log(srvs, 'services');
             // Initialize FilePicker script and build DOM elements
             // and setup binding methods
             services = srvs;
