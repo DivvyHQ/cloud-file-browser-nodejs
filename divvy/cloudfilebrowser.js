@@ -674,8 +674,8 @@ the License.
     'use strict';
     var exports = module.exports = {};
     $.fn.cloudFileBrowser = function(options) {
-        console.log(options, 'OPTIONOENS');
         cloudFileBrowser.buildDomEls(this, function() {
+            conosle.log(options, 'OPTIONS');
              CloudElements.init(options);
         });
     };
