@@ -698,6 +698,7 @@ var cloudFileBrowser = (function() {
     return {
 
         init: function(srvs, srvsDis, srvsImages) {
+            console.log(srvs, 'services');
             // Initialize FilePicker script and build DOM elements
             // and setup binding methods
             services = srvs;
