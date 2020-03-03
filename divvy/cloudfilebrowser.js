@@ -112,7 +112,6 @@ var CloudElements = (function() {
             var docservicesimages = [];
 
             for (var x in data) {
-                debugger;
                 var elementKey = data[x].key;
                 if (cedocumentconfig[elementKey] != null) {
                     docservices.push(elementKey);
@@ -676,7 +675,6 @@ the License.
     var exports = module.exports = {};
     $.fn.cloudFileBrowser = function(options) {
         cloudFileBrowser.buildDomEls(this, function() {
-            console.log(options, 'OPTIONS');
              CloudElements.init(options);
         });
     };
@@ -695,6 +693,7 @@ var cloudFileBrowser = (function() {
         tabs = '#services-tabs',
         container = '#services-containers',
         selectedFiles = {},
+        servicesOrder = {},
         extension = '';
 
     return {
@@ -722,6 +721,7 @@ var cloudFileBrowser = (function() {
             for (var index in services) {
                 var check = CloudElements.validateToken(services[index]);
                 deferreds.push(check);
+                servicesOrder[index] = service[index];
             }
 
             $.when.apply($, deferreds).done(function() {
@@ -836,27 +836,29 @@ var cloudFileBrowser = (function() {
 
             var tabsHTML = '',
                 containerHTML = '';
+            debugger;
             for (var i=0; i<services.length; i++) {
-                tabsHTML += '<li class="' + services[i] + (i == 0 ? ' on' : '' )+ '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
-                if (services[i] !== 'onedrivebusiness' && services[i] !== 'sharepoint') {
-                    containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
+                var service = servicesOrder[x];
+                tabsHTML += '<li class="' + service + (i == 0 ? ' on' : '' )+ '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
+                if (service !== 'onedrivebusiness' && service !== 'sharepoint') {
+                    containerHTML +=    '<div class="' + service + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + service + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + servicesImages[i] + '"></h2>' +
-                    '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
+                    '<a href="#" class="provision" aria-element="' + service + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
                     '</div>';
                 } else {
                     var text = 'OneDrive Business Site Addresss';
                     var spacing = '';
-                    if (services[i] === 'sharepoint') {
+                    if (service === 'sharepoint') {
                         text = 'Share Point Site Addresss';
                         spacing = '</br>';
                     }
-                    containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
+                    containerHTML +=    '<div class="' + service + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + service + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + servicesImages[i] + '"></h2>' +
                     '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
                     '<input type="text" id="site-address"/></div>' +
-                    '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
+                    '<a href="#" class="provision" aria-element="' + service + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
                     '</div>';
                 }
             }
