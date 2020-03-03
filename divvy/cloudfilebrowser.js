@@ -87,7 +87,7 @@ var CloudElements = (function() {
         },
 
         init: function(config) {
-
+            console.log(config, 'CONFIG');
             cedocumentconfig = config.documents;
             oSec = config.oSec;
             uSec = config.uSec;
@@ -112,6 +112,7 @@ var CloudElements = (function() {
             var docservicesimages = [];
 
             for (var x in data) {
+                debugger;
                 var elementKey = data[x].key;
                 if (cedocumentconfig[elementKey] != null) {
                     docservices.push(elementKey);
