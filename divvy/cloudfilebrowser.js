@@ -75,7 +75,7 @@ var CloudElements = (function() {
         validateToken: function(element) {
 
             var deferred = $.Deferred();
-
+            console.log('validateToken: ', element);
             provision.getDocuments(element, '/', function(response, args) {
                 if (response.status == 401) {
                     delete cedocumentconfig[element].elementToken;
@@ -87,7 +87,6 @@ var CloudElements = (function() {
         },
 
         init: function(config) {
-            console.log(config, 'CONFIG');
             cedocumentconfig = config.documents;
             oSec = config.oSec;
             uSec = config.uSec;
@@ -127,7 +126,6 @@ var CloudElements = (function() {
                     });
                 }
             }
-            console.log(servicesOrder, 'servicesOrder');
             cloudFileBrowser.init(servicesDetail);
         },
 
@@ -196,23 +194,19 @@ var provision = (function() {
     return {
 
         isAuthorized: function(element) {
-            console.log('isAuthorized: ', element);
             var eleTkn = _provision.getTokenForElement(element);
             return eleTkn != null;
         },
 
         getDocuments: function(element, path, cb, cbArgs) {
-            console.log('getDocuments: ', element);
             server.list(_provision.getTokenForElement(element), path, cb, cbArgs);
         },
 
         searchDocuments: function(element, path, keyword, cb, cbArgs) {
-            console.log('searchDocuments: ', element);
             server.search(_provision.getTokenForElement(element), path, keyword, cb, cbArgs);
         },
 
         createInstance: function(element, cb, cbArgs) {
-            console.log('createInstance: ', element);
             //Step 1 : Check if the element token is present, if so list the documents
             var eleTkn = _provision.getTokenForElement(element);
             if(eleTkn != null) {
@@ -291,7 +285,6 @@ var provision = (function() {
         },
 
         fileSelected: function(element, filepath, fileId) {
-            console.log('fileSelected: ', element);
             var response = {
                 'element': element,
                 'elementToken': _provision.getTokenForElement(element),
@@ -308,12 +301,10 @@ var provision = (function() {
         },
 
         downloadFile: function(element, filepath) {
-            console.log('downloadFile: ', element);
             server.downloadFile(_provision.getTokenForElement(element), filepath);
         },
 
         displayFile: function(element, filepath, cb, cbArgs) {
-            console.log('displayFile: ', element);
             server.displayThumbnail(_provision.getTokenForElement(element), filepath, cb, cbArgs);
         },
 
@@ -338,7 +329,6 @@ var provision = (function() {
         },
 
         uploadFile: function(element, filepath, fileData, cb, cbArgs) {
-            console.log('uploadFile: ', element);
             server.uploadFile(_provision.getTokenForElement(element), filepath, fileData, cb, cbArgs);
         }
     };
@@ -714,7 +704,6 @@ var cloudFileBrowser = (function() {
             // Initialize FilePicker script and build DOM elements
             // and setup binding methods
             services = servicesDetail;
-            console.log('init stage : ', services);
 
             cloudFileBrowser.selectedFiles = {};
 
@@ -792,6 +781,7 @@ var cloudFileBrowser = (function() {
             // For that we still display the documents inside root path
 
             if(keyword === undefined || keyword === '') {
+                console.log('performSearch', element);
                 provision.getDocuments(element, '/', function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path, keyword);
                 }, callbackArgs);
@@ -851,7 +841,6 @@ var cloudFileBrowser = (function() {
                 sortedServices = services.sort(function(a, b){
                     return a.order - b.order;
                 });
-            console.log('BUILDING TABS : ', sortedServices);
             sortedServices.map(function (service, index) {
                 var serviceName = service.service;
                 tabsHTML += '<li class="' + serviceName + (service.order == 0 ? ' on' : '' ) + '"><img src="' + service.image + '">' + service.displayName + '</li>';
@@ -908,7 +897,6 @@ var cloudFileBrowser = (function() {
                 $(this).addClass('on');
                 $(container + ' > div').eq(index).addClass('on');
                 var element = $(this).find('a').attr('aria-element');
-                console.log(element, 'elementary');
                 cloudFileBrowser.initElement(element);
 
             });
@@ -943,7 +931,7 @@ var cloudFileBrowser = (function() {
                     'element' : element,
                     'path' : '/'
                 };
-
+                console.log('bindBreadCrumbClick: ', element);
                 provision.getDocuments(element, '/', function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
                 }, callbackArgs);
@@ -961,7 +949,7 @@ var cloudFileBrowser = (function() {
                     'element' : element,
                     'path' : pathResourse
                 };
-
+                console.log('bindBreadCrumbClick2: ', element);
                 provision.getDocuments(element, pathResourse, function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
                 }, callbackArgs);
@@ -985,7 +973,7 @@ var cloudFileBrowser = (function() {
                     'element' : element,
                     'path' : location
                 };
-
+                console.log('bindFileInfo: ', element);
                 provision.getDocuments(element, location, function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
                 }, callbackArgs);
@@ -1043,7 +1031,7 @@ var cloudFileBrowser = (function() {
                 'element' : element,
                 'path' : '/'
             };
-
+            console.log('handleProvision: ', element);
             provision.getDocuments(element, '/', function(data, cbArgs) {
                 cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
             }, callbackArgs);
