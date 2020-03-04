@@ -111,11 +111,11 @@ var CloudElements = (function() {
             var docservicesnames = [];
             var docservicesimages = [];
             var servicesOrder = {
-                0: 'box',
-                1: 'dropbox',
-                2: 'googledrive',
-                3: 'onedrive',
-                4: 'sharepoint',
+                'box': { order: 0 },
+                'dropbox': { order: 1 },
+                'googledrive': { order: 2 },
+                'onedrive': { order: 3 },
+                'sharepoint': { order: 4 },
             };
 
             for (var x in data) {
@@ -124,10 +124,13 @@ var CloudElements = (function() {
                     docservices.push(elementKey);
                     docservicesnames.push(data[x].name);
                     docservicesimages.push(envUrl+'images/'+data[x].image);
+                    servicesOrder[elementKey] = {
+                        'name': data[x].name,
+                        'image': envUrl+'images/'+data[x].image
+                    };
                 }
             }
             console.log(servicesOrder, 'servicesOrder');
-            debugger;
             cloudFileBrowser.init(docservices, docservicesnames, docservicesimages);
         },
 
