@@ -707,6 +707,7 @@ var cloudFileBrowser = (function() {
             // Initialize FilePicker script and build DOM elements
             // and setup binding methods
             services = servicesDetail;
+            console.log('init stage : ', services);
 
             cloudFileBrowser.selectedFiles = {};
 
@@ -843,10 +844,10 @@ var cloudFileBrowser = (function() {
                 sortedServices = services.sort(function(a, b){
                     return a.order - b.order;
                 });
-
+            console.log('BUILDING TABS : ', sortedServices);
             sortedServices.map(function (service, index) {
                 var serviceName = service.service;
-                tabsHTML += '<li class="' + serviceName + (i == 0 ? ' on' : '' ) + '"><img src="' + service.image + '">' + service.displayName + '</li>';
+                tabsHTML += '<li class="' + serviceName + (service.order == 0 ? ' on' : '' ) + '"><img src="' + service.image + '">' + service.displayName + '</li>';
                 if (serviceName !== 'onedrivebusiness' && serviceName !== 'sharepoint') {
                     containerHTML +=    '<div class="' + serviceName + (index == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
                     '<h2></h2>' +
@@ -860,7 +861,7 @@ var cloudFileBrowser = (function() {
                         text = 'Share Point Site Addresss';
                         spacing = '</br>';
                     }
-                    containerHTML +=    '<div class="' + serviceName + (index == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
+                    containerHTML +=    '<div class="' + serviceName + (service.order == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + service.image + '"></h2>' +
                     '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
