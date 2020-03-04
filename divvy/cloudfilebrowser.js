@@ -842,7 +842,7 @@ var cloudFileBrowser = (function() {
             var tabsHTML = '',
                 containerHTML = '';
             for (var i=0; i<services.length; i++) {
-                var service = servicesOrder[i];
+                var service = services[i];
                 tabsHTML += '<li class="' + service + (i == 0 ? ' on' : '' ) + '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
                 if (service !== 'onedrivebusiness' && service !== 'sharepoint') {
                     containerHTML +=    '<div class="' + service + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + service + '">'+
