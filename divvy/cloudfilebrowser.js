@@ -900,7 +900,7 @@ var cloudFileBrowser = (function() {
                 $('div.on, li.on').removeClass('on');
                 $(this).addClass('on');
                 $(container + ' > div').eq(index).addClass('on');
-                var element = $(this).find('a').getAttribute('aria-element');
+                var element = $(this).find('a').attr('aria-element');
                 console.log(element, 'elementary');
                 cloudFileBrowser.initElement(element);
 
@@ -1175,7 +1175,7 @@ var cloudFileBrowser = (function() {
                         'element': element,
                         'currentIndex': currentIndex+i
                     };
-
+                    debugger;
                     provision.uploadFile(element, path, data[i], cloudFileBrowser.handleUploadComplete, cbArgs);
                 }
             }
