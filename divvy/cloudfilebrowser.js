@@ -111,7 +111,7 @@ var CloudElements = (function() {
                 'box': 0,
                 'dropbox': 1,
                 'googledrive': 2,
-                'onedrive': 3,
+                'onedrivebusiness': 3,
                 'sharepoint': 4,
             };
             var servicesDetail = [];
