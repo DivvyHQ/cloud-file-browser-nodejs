@@ -843,8 +843,8 @@ var cloudFileBrowser = (function() {
                 containerHTML = '';
             debugger;
             for (var i=0; i<services.length; i++) {
-                var service = servicesOrder[x];
-                tabsHTML += '<li class="' + service + (i == 0 ? ' on' : '' )+ '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
+                var service = servicesOrder[i];
+                tabsHTML += '<li class="' + service + (i == 0 ? ' on' : '' ) + '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
                 if (service !== 'onedrivebusiness' && service !== 'sharepoint') {
                     containerHTML +=    '<div class="' + service + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + service + '">'+
                     '<h2></h2>' +
