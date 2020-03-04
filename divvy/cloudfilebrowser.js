@@ -75,7 +75,6 @@ var CloudElements = (function() {
         validateToken: function(element) {
 
             var deferred = $.Deferred();
-            console.log('validateToken: ', element);
             provision.getDocuments(element, '/', function(response, args) {
                 if (response.status == 401) {
                     delete cedocumentconfig[element].elementToken;
@@ -720,8 +719,8 @@ var cloudFileBrowser = (function() {
             // different CloudElements and deletes bad tokens
             var deferreds = [];
 
-            for (var service in services) {
-                var check = CloudElements.validateToken(service.service);
+            for (var index in services) {
+                var check = CloudElements.validateToken(services[index].service);
                 deferreds.push(check);
             }
 
@@ -781,7 +780,6 @@ var cloudFileBrowser = (function() {
             // For that we still display the documents inside root path
 
             if(keyword === undefined || keyword === '') {
-                console.log('performSearch', element);
                 provision.getDocuments(element, '/', function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path, keyword);
                 }, callbackArgs);
@@ -931,7 +929,6 @@ var cloudFileBrowser = (function() {
                     'element' : element,
                     'path' : '/'
                 };
-                console.log('bindBreadCrumbClick: ', element);
                 provision.getDocuments(element, '/', function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
                 }, callbackArgs);
@@ -949,7 +946,6 @@ var cloudFileBrowser = (function() {
                     'element' : element,
                     'path' : pathResourse
                 };
-                console.log('bindBreadCrumbClick2: ', element);
                 provision.getDocuments(element, pathResourse, function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
                 }, callbackArgs);
@@ -973,7 +969,6 @@ var cloudFileBrowser = (function() {
                     'element' : element,
                     'path' : location
                 };
-                console.log('bindFileInfo: ', element);
                 provision.getDocuments(element, location, function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
                 }, callbackArgs);
@@ -1031,7 +1026,6 @@ var cloudFileBrowser = (function() {
                 'element' : element,
                 'path' : '/'
             };
-            console.log('handleProvision: ', element);
             provision.getDocuments(element, '/', function(data, cbArgs) {
                 cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
             }, callbackArgs);
