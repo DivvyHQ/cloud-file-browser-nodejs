@@ -693,7 +693,13 @@ var cloudFileBrowser = (function() {
         tabs = '#services-tabs',
         container = '#services-containers',
         selectedFiles = {},
-        servicesOrder = {},
+        servicesOrder = {
+            0: 'box',
+            1: 'dropbox',
+            2: 'googledrive',
+            3: 'onedrive',
+            4: 'sharepoint',
+        },
         extension = '';
 
     return {
@@ -721,7 +727,6 @@ var cloudFileBrowser = (function() {
             for (var index in services) {
                 var check = CloudElements.validateToken(services[index]);
                 deferreds.push(check);
-                servicesOrder[index] = service[index];
             }
 
             $.when.apply($, deferreds).done(function() {
