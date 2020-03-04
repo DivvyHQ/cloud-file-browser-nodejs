@@ -193,20 +193,24 @@ var provision = (function() {
     return {
 
         isAuthorized: function(element) {
+            console.log('isAuthorized', element);
             var eleTkn = _provision.getTokenForElement(element);
             return eleTkn != null;
         },
 
         getDocuments: function(element, path, cb, cbArgs) {
+            console.log('getDocuments', element);
             server.list(_provision.getTokenForElement(element), path, cb, cbArgs);
         },
 
         searchDocuments: function(element, path, keyword, cb, cbArgs) {
+            console.log('searchDocuments', element);
             server.search(_provision.getTokenForElement(element), path, keyword, cb, cbArgs);
         },
 
         createInstance: function(element, cb, cbArgs) {
             //Step 1 : Check if the element token is present, if so list the documents
+            console.log('createInstance', element);
             var eleTkn = _provision.getTokenForElement(element);
             if(eleTkn != null) {
                 cb(eleTkn, cbArgs);
@@ -284,6 +288,7 @@ var provision = (function() {
         },
 
         fileSelected: function(element, filepath, fileId) {
+            console.log('fileSelected', element);
             var response = {
                 'element': element,
                 'elementToken': _provision.getTokenForElement(element),
@@ -300,10 +305,12 @@ var provision = (function() {
         },
 
         downloadFile: function(element, filepath) {
+            console.log('downloadFile', element);
             server.downloadFile(_provision.getTokenForElement(element), filepath);
         },
 
         displayFile: function(element, filepath, cb, cbArgs) {
+            console.log('displayFile', element);
             server.displayThumbnail(_provision.getTokenForElement(element), filepath, cb, cbArgs);
         },
 
@@ -328,6 +335,7 @@ var provision = (function() {
         },
 
         uploadFile: function(element, filepath, fileData, cb, cbArgs) {
+            console.log('uploadFile', element);
             server.uploadFile(_provision.getTokenForElement(element), filepath, fileData, cb, cbArgs);
         }
     };
@@ -714,6 +722,7 @@ var cloudFileBrowser = (function() {
             var firstElement = services.filter(function (service) {
                 return service.order === 0;
             }).service;
+            console.log(firstElement, 'firstElement');
 
             // This is a loop that runs validateToken over all of the
             // different CloudElements and deletes bad tokens
@@ -907,7 +916,7 @@ var cloudFileBrowser = (function() {
                 event.stopPropagation();
 
                 var element = $(this).attr('aria-element');
-
+                console.log(element, 'ELEMENTO');
                 cloudFileBrowser.provisionEl(element);
             });
 
