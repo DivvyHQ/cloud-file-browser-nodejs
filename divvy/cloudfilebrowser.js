@@ -841,9 +841,9 @@ var cloudFileBrowser = (function() {
 
             var tabsHTML = '',
                 containerHTML = '';
-            debugger;
             for (var i=0; i<services.length; i++) {
                 var service = servicesOrder[i];
+                console.log(service, 'service');
                 tabsHTML += '<li class="' + service + (i == 0 ? ' on' : '' ) + '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
                 if (service !== 'onedrivebusiness' && service !== 'sharepoint') {
                     containerHTML +=    '<div class="' + service + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + service + '">'+
@@ -866,6 +866,8 @@ var cloudFileBrowser = (function() {
                     '<a href="#" class="provision" aria-element="' + service + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
                     '</div>';
                 }
+                console.log('tabsHTML');
+                debugger;
             }
 
             $(tabs).append(tabsHTML);
