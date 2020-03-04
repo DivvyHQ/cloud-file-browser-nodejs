@@ -107,31 +107,28 @@ var CloudElements = (function() {
 
         initCallback: function(data, cbArgs) {
 
-            var docservices = [];
-            var docservicesnames = [];
-            var docservicesimages = [];
             var servicesOrder = {
-                'box': { order: 0 },
-                'dropbox': { order: 1 },
-                'googledrive': { order: 2 },
-                'onedrive': { order: 3 },
-                'sharepoint': { order: 4 },
+                'box': 0,
+                'dropbox': 1,
+                'googledrive': 2,
+                'onedrive': 3,
+                'sharepoint': 4,
             };
+            var servicesDetail = [];
 
             for (var x in data) {
                 var elementKey = data[x].key;
                 if (cedocumentconfig[elementKey] != null) {
-                    docservices.push(elementKey);
-                    docservicesnames.push(data[x].name);
-                    docservicesimages.push(envUrl+'images/'+data[x].image);
-                    servicesOrder[elementKey] = {
-                        'name': data[x].name,
+                    servicesDetail.push({
+                        'order': servicesOrder[elementKey],
+                        'service': elementKey,
+                        'displayName': data[x].name,
                         'image': envUrl+'images/'+data[x].image
-                    };
+                    });
                 }
             }
             console.log(servicesOrder, 'servicesOrder');
-            cloudFileBrowser.init(docservices, docservicesnames, docservicesimages);
+            cloudFileBrowser.init(servicesDetail);
         },
 
         updateCallback: function(pagequery) {
@@ -699,8 +696,6 @@ var cloudFileBrowser = (function() {
 
     // PRIVATE VARIABLES
     var services = null,
-        servicesDisplay = null,
-        servicesImages = null,
         tabs = '#services-tabs',
         container = '#services-containers',
         selectedFiles = {},
@@ -708,12 +703,10 @@ var cloudFileBrowser = (function() {
 
     return {
 
-        init: function(srvs, srvsDis, srvsImages) {
+        init: function(servicesDetail) {
             // Initialize FilePicker script and build DOM elements
             // and setup binding methods
-            services = srvs;
-            servicesDisplay = srvsDis;
-            servicesImages = srvsImages;
+            services = servicesDetail;
 
             cloudFileBrowser.selectedFiles = {};
 
@@ -722,14 +715,16 @@ var cloudFileBrowser = (function() {
             this.bindProvisionButtons();
             this.initDragDropHandlers();
 
-            var firstElement = services[0];
+            var firstElement = services.filter(function (service) {
+                return service.order === 0;
+            }).service;
 
             // This is a loop that runs validateToken over all of the
             // different CloudElements and deletes bad tokens
             var deferreds = [];
 
-            for (var index in services) {
-                var check = CloudElements.validateToken(services[index]);
+            for (var service in services) {
+                var check = CloudElements.validateToken(service.service);
                 deferreds.push(check);
             }
 
@@ -844,32 +839,36 @@ var cloudFileBrowser = (function() {
             // for each service installed
 
             var tabsHTML = '',
-                containerHTML = '';
-            for (var i=0; i<services.length; i++) {
-                var service = services[i];
-                tabsHTML += '<li class="' + service + (i == 0 ? ' on' : '' ) + '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
-                if (service !== 'onedrivebusiness' && service !== 'sharepoint') {
-                    containerHTML +=    '<div class="' + service + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + service + '">'+
+                containerHTML = '',
+                sortedServices = services.sort(function(a, b){
+                    return a.order - b.order;
+                });
+
+            sortedServices.map(function (service, index) {
+                var serviceName = service.service;
+                tabsHTML += '<li class="' + serviceName + (i == 0 ? ' on' : '' ) + '"><img src="' + service.image + '">' + service.displayName + '</li>';
+                if (serviceName !== 'onedrivebusiness' && serviceName !== 'sharepoint') {
+                    containerHTML +=    '<div class="' + serviceName + (index == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
                     '<h2></h2>' +
-                    '<h2><img src="' + servicesImages[i] + '"></h2>' +
-                    '<a href="#" class="provision" aria-element="' + service + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
+                    '<h2><img src="' + service.image + '"></h2>' +
+                    '<a href="#" class="provision" aria-element="' + serviceName + '">Connect to your ' + service.displayName + ' account</a>' +
                     '</div>';
                 } else {
                     var text = 'OneDrive Business Site Addresss';
                     var spacing = '';
-                    if (service === 'sharepoint') {
+                    if (serviceName === 'sharepoint') {
                         text = 'Share Point Site Addresss';
                         spacing = '</br>';
                     }
-                    containerHTML +=    '<div class="' + service + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + service + '">'+
+                    containerHTML +=    '<div class="' + serviceName + (index == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
                     '<h2></h2>' +
-                    '<h2><img src="' + servicesImages[i] + '"></h2>' +
+                    '<h2><img src="' + service.image + '"></h2>' +
                     '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
                     '<input type="text" id="site-address"/></div>' +
-                    '<a href="#" class="provision" aria-element="' + service + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
+                    '<a href="#" class="provision" aria-element="' + serviceName + '">Connect to your ' + service.displayName + ' account</a>' +
                     '</div>';
                 }
-            }
+            });
 
             $(tabs).append(tabsHTML);
             $(container).append(containerHTML);
@@ -900,8 +899,9 @@ var cloudFileBrowser = (function() {
                 $('div.on, li.on').removeClass('on');
                 $(this).addClass('on');
                 $(container + ' > div').eq(index).addClass('on');
-
-                cloudFileBrowser.initElement(services[index]);
+                var element = $(this).find('a').getAttribute('aria-element');
+                console.log(element, 'elementary');
+                cloudFileBrowser.initElement(element);
 
             });
         },
