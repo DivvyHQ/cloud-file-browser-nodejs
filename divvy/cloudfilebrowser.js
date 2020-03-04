@@ -94,7 +94,13 @@ var CloudElements = (function() {
             aKey = config.aKey;
             callback = config.callback;
             ceconfig = config;
-
+            servicesOrder = {
+                0: 'box',
+                1: 'dropbox',
+                2: 'googledrive',
+                3: 'onedrive',
+                4: 'sharepoint',
+            };
             if(config.env == null || config.env == undefined) {
                 envUrl = 'https://api.cloud-elements.com/elements/'
             }
@@ -119,7 +125,8 @@ var CloudElements = (function() {
                     docservicesimages.push(envUrl+'images/'+data[x].image);
                 }
             }
-
+            console.log(servicesOrder, 'servicesOrder');
+            debugger;
             cloudFileBrowser.init(docservices, docservicesnames, docservicesimages);
         },
 
@@ -693,13 +700,6 @@ var cloudFileBrowser = (function() {
         tabs = '#services-tabs',
         container = '#services-containers',
         selectedFiles = {},
-        servicesOrder = {
-            0: 'box',
-            1: 'dropbox',
-            2: 'googledrive',
-            3: 'onedrive',
-            4: 'sharepoint',
-        },
         extension = '';
 
     return {
@@ -843,7 +843,6 @@ var cloudFileBrowser = (function() {
                 containerHTML = '';
             for (var i=0; i<services.length; i++) {
                 var service = servicesOrder[i];
-                console.log(service, 'service');
                 tabsHTML += '<li class="' + service + (i == 0 ? ' on' : '' ) + '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
                 if (service !== 'onedrivebusiness' && service !== 'sharepoint') {
                     containerHTML +=    '<div class="' + service + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + service + '">'+
@@ -866,8 +865,6 @@ var cloudFileBrowser = (function() {
                     '<a href="#" class="provision" aria-element="' + service + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
                     '</div>';
                 }
-                console.log('tabsHTML');
-                debugger;
             }
 
             $(tabs).append(tabsHTML);
