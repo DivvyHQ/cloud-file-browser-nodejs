@@ -94,13 +94,7 @@ var CloudElements = (function() {
             aKey = config.aKey;
             callback = config.callback;
             ceconfig = config;
-            servicesOrder = {
-                0: 'box',
-                1: 'dropbox',
-                2: 'googledrive',
-                3: 'onedrive',
-                4: 'sharepoint',
-            };
+
             if(config.env == null || config.env == undefined) {
                 envUrl = 'https://api.cloud-elements.com/elements/'
             }
@@ -116,6 +110,13 @@ var CloudElements = (function() {
             var docservices = [];
             var docservicesnames = [];
             var docservicesimages = [];
+            var servicesOrder = {
+                0: 'box',
+                1: 'dropbox',
+                2: 'googledrive',
+                3: 'onedrive',
+                4: 'sharepoint',
+            };
 
             for (var x in data) {
                 var elementKey = data[x].key;
