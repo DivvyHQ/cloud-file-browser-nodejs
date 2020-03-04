@@ -144,6 +144,7 @@ var provision = (function() {
 
      var _provision = {
         getTokenForElement: function(element) {
+            debugger;
             var eleObj = CloudElements.getConfig()[element];
             return eleObj['elementToken'];
         },
@@ -1175,7 +1176,6 @@ var cloudFileBrowser = (function() {
                         'element': element,
                         'currentIndex': currentIndex+i
                     };
-                    debugger;
                     provision.uploadFile(element, path, data[i], cloudFileBrowser.handleUploadComplete, cbArgs);
                 }
             }
