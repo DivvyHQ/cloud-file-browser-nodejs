@@ -893,7 +893,9 @@ var cloudFileBrowser = (function() {
                 $('div.on, li.on').removeClass('on');
                 $(this).addClass('on');
                 $(container + ' > div').eq(index).addClass('on');
-                var element = $(this).find('a').attr('aria-element');
+                var element = services.find(function(srv) {
+                    return srv.order === index;
+                }).service;
                 cloudFileBrowser.initElement(element);
 
             });
