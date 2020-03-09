@@ -850,15 +850,17 @@ var cloudFileBrowser = (function() {
                 } else {
                     var text = 'OneDrive Business Site Addresss';
                     var spacing = '';
+                    var element_id = '';
                     if (serviceName === 'sharepoint') {
                         text = 'Share Point Site Addresss';
                         spacing = '</br>';
+                        element_id = 'sp-';
                     }
                     containerHTML +=    '<div class="' + serviceName + (service.order == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + service.image + '"></h2>' +
                     '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
-                    '<input type="text" id="site-address"/></div>' +
+                    '<input type="text" id="' + element_id + 'site-address"/></div>' +
                     '<a href="#" class="provision" aria-element="' + serviceName + '">Connect to your ' + service.displayName + ' account</a>' +
                     '</div>';
                 }
@@ -1010,11 +1012,15 @@ var cloudFileBrowser = (function() {
             // Note -- Demo only, always returns successful
 
             cloudFileBrowser.showLoading();
-
+            var siteAddress = $(container).find('#site-address').val();
+            if (element === 'sharepoint') {
+            	siteAddress = $(container).find('#sp-site-address').val();
+            }
             var callbackArgs = {
                 'element' : element,
-                'siteAddress': $(container).find('#site-address').val()
+                'siteAddress': siteAddress
             };
+
             provision.createInstance(element, cloudFileBrowser.handleOnProvision, callbackArgs);
         },
 
