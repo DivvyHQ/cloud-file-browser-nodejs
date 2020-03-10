@@ -1307,5 +1307,4 @@ var cloudFileBrowser = (function() {
 
         }
     };
-
 })();
