@@ -853,11 +853,11 @@ var cloudFileBrowser = (function() {
                     '<a href="#" class="provision" aria-element="' + serviceName + '">Connect to your ' + service.displayName + ' account</a>' +
                     '</div>';
                 } else {
-                    var text = 'OneDrive Business Site Addresss';
-                    var spacing = '';
-                    var element_id = '';
-                    var token_elements = '';
-                    var style = '';
+                    var text = 'OneDrive Business Site Addresss',
+                    spacing = '',
+                    element_id = '',
+                    token_elements = '',
+                    style = '';
                     if (serviceName === 'sharepoint') {
                         text = 'Share Point Site Addresss';
                         spacing = '</br>';
@@ -1031,8 +1031,8 @@ var cloudFileBrowser = (function() {
             var callbackArgs = {
                 'element' : element,
                 'siteAddress': siteAddress,
-                apiKey,
-                apiSecret
+                'apiKey': apiKey,
+                'apiSecret': apiSecrets
             };
 
             provision.createInstance(element, cloudFileBrowser.handleOnProvision, callbackArgs);
