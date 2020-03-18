@@ -75,6 +75,7 @@ var CloudElements = (function() {
         validateToken: function(element) {
 
             var deferred = $.Deferred();
+
             provision.getDocuments(element, '/', function(response, args) {
                 if (response.status == 401) {
                     delete cedocumentconfig[element].elementToken;
@@ -86,6 +87,7 @@ var CloudElements = (function() {
         },
 
         init: function(config) {
+
             cedocumentconfig = config.documents;
             oSec = config.oSec;
             uSec = config.uSec;
@@ -205,6 +207,7 @@ var provision = (function() {
         },
 
         createInstance: function(element, cb, cbArgs) {
+
             //Step 1 : Check if the element token is present, if so list the documents
             var eleTkn = _provision.getTokenForElement(element);
             if(eleTkn != null) {
@@ -214,7 +217,6 @@ var provision = (function() {
 
             //Step 2 : Check if API Key and Secret Exists, create an instance using those keys
             var elementDetails = _provision.getElementDetails(element);
-
             if(elementDetails != null && elementDetails != undefined) {
 
                 // if onedrivebusiness
@@ -288,6 +290,7 @@ var provision = (function() {
         },
 
         fileSelected: function(element, filepath, fileId) {
+
             var response = {
                 'element': element,
                 'elementToken': _provision.getTokenForElement(element),
@@ -920,6 +923,7 @@ var cloudFileBrowser = (function() {
                 event.stopPropagation();
 
                 var element = $(this).attr('aria-element');
+
                 cloudFileBrowser.provisionEl(element);
             });
 
@@ -941,6 +945,7 @@ var cloudFileBrowser = (function() {
                     'element' : element,
                     'path' : '/'
                 };
+
                 provision.getDocuments(element, '/', function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
                 }, callbackArgs);
@@ -958,6 +963,7 @@ var cloudFileBrowser = (function() {
                     'element' : element,
                     'path' : pathResourse
                 };
+
                 provision.getDocuments(element, pathResourse, function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
                 }, callbackArgs);
@@ -981,6 +987,7 @@ var cloudFileBrowser = (function() {
                     'element' : element,
                     'path' : location
                 };
+
                 provision.getDocuments(element, location, function(data, cbArgs) {
                     cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
                 }, callbackArgs);
@@ -1023,17 +1030,15 @@ var cloudFileBrowser = (function() {
 
             cloudFileBrowser.showLoading();
             var siteAddress = $(container).find('#site-address').val();
-            if (element === 'sharepoint') {
-            	siteAddress = $(container).find('#sp-site-address').val();
-            	apiKey = $(container).find('#client_key').val();
-            	apiSecret = $(container).find('#secret_key').val();
-            }
             var callbackArgs = {
                 'element' : element,
                 'siteAddress': siteAddress,
-                'apiKey': apiKey,
-                'apiSecret': apiSecrets
             };
+            if (element === 'sharepoint') {
+            	callbackArgs['siteAddress'] = $(container).find('#sp-site-address').val();
+            	callbackArgs['apiKey'] = $(container).find('#client_key').val();
+            	callbackArgs['apiSecret'] = $(container).find('#secret_key').val();
+            }
 
             provision.createInstance(element, cloudFileBrowser.handleOnProvision, callbackArgs);
         },
@@ -1046,6 +1051,7 @@ var cloudFileBrowser = (function() {
                 'element' : element,
                 'path' : '/'
             };
+
             provision.getDocuments(element, '/', function(data, cbArgs) {
                 cloudFileBrowser.drawEl(data, cbArgs.element, cbArgs.path);
             }, callbackArgs);
@@ -1184,6 +1190,7 @@ var cloudFileBrowser = (function() {
                         'element': element,
                         'currentIndex': currentIndex+i
                     };
+
                     provision.uploadFile(element, path, data[i], cloudFileBrowser.handleUploadComplete, cbArgs);
                 }
             }
@@ -1321,4 +1328,5 @@ var cloudFileBrowser = (function() {
 
         }
     };
+
 })();
