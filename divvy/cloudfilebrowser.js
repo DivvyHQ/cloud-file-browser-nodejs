@@ -227,6 +227,11 @@ var provision = (function() {
                     }
                 }
 
+                if (element === 'sharepoint') {
+                    elementDetails.apiKey = cbArgs.apiKey;
+                    elementDetails.apiSecret = cbArgs.apiSecret;
+                }
+
                 var win = window.open('', '_target');
 
                 var callbackArgs = {
@@ -848,20 +853,25 @@ var cloudFileBrowser = (function() {
                     '<a href="#" class="provision" aria-element="' + serviceName + '">Connect to your ' + service.displayName + ' account</a>' +
                     '</div>';
                 } else {
-                    var text = 'OneDrive Business Site Addresss';
-                    var spacing = '';
-                    var element_id = '';
+                    var text = 'OneDrive Business Site Addresss',
+                    spacing = '',
+                    element_id = '',
+                    token_elements = '',
+                    style = '';
                     if (serviceName === 'sharepoint') {
                         text = 'Share Point Site Addresss';
                         spacing = '</br>';
                         element_id = 'sp-';
+                        token_elements = '<div> <input type="text" id="client_key" placeholder="Client API Key"></div>';
+                        token_elements += '<div> <input type="text" id="secret_key" placeholder="API Secret Key"></div>';
+                        style = 'style="margin-top: 110px"';
                     }
                     containerHTML +=    '<div class="' + serviceName + (service.order == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + service.image + '"></h2>' +
                     '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
-                    '<input type="text" id="' + element_id + 'site-address"/></div>' +
-                    '<a href="#" class="provision" aria-element="' + serviceName + '">Connect to your ' + service.displayName + ' account</a>' +
+                    '<input type="text" id="' + element_id + 'site-address" placeholder="Site Address"/>' + token_elements + '</div>' +
+                    '<a href="#" class="provision" aria-element="' + serviceName + '" ' + style + '>Connect to your ' + service.displayName + ' account</a>' +
                     '</div>';
                 }
             });
@@ -1015,10 +1025,14 @@ var cloudFileBrowser = (function() {
             var siteAddress = $(container).find('#site-address').val();
             if (element === 'sharepoint') {
             	siteAddress = $(container).find('#sp-site-address').val();
+            	apiKey = $(container).find('#client_key').val();
+            	apiSecret = $(container).find('#secret_key').val();
             }
             var callbackArgs = {
                 'element' : element,
-                'siteAddress': siteAddress
+                'siteAddress': siteAddress,
+                'apiKey': apiKey,
+                'apiSecret': apiSecrets
             };
 
             provision.createInstance(element, cloudFileBrowser.handleOnProvision, callbackArgs);
@@ -1307,5 +1321,4 @@ var cloudFileBrowser = (function() {
 
         }
     };
-
 })();
