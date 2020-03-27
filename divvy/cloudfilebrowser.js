@@ -602,6 +602,7 @@ var server = (function() {
 
         getOAuthUrlOnAPIKey: function(element, apiKey, apiSec, callbackUrl, cb, cbArgs) {
 
+
             var parameters = {
                 'elementKeyOrId': element,
                 'apiKey' : apiKey,
@@ -858,22 +859,26 @@ var cloudFileBrowser = (function() {
                 } else {
                     var text = 'OneDrive Business Site Addresss',
                     spacing = '',
-                    element_id = '',
-                    token_elements = '',
-                    style = '';
+                    elementId = '',
+                    tokenElement = '',
+                    style = '',
+                    domainClue = '';
                     if (serviceName === 'sharepoint') {
                         text = 'Share Point Site Addresss';
                         spacing = '</br>';
-                        element_id = 'sp-';
-                        token_elements = '<div> <input type="text" id="client_key" placeholder="Client API Key"></div>';
-                        token_elements += '<div> <input type="text" id="secret_key" placeholder="API Secret Key"></div>';
+                        elementId = 'sp-';
+                        tokenElement = '<div> <input type="text" id="client_key" placeholder="Client API Key"></div>';
+                        tokenElement += '<div> <input type="text" id="secret_key" placeholder="API Secret Key"></div>';
                         style = 'style="margin-top: 110px"';
+                    } else {
+                        domainClue = '-my';
                     }
+
                     containerHTML +=    '<div class="' + serviceName + (service.order == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
                     '<h2></h2>' +
                     '<h2><img src="' + service.image + '"></h2>' +
-                    '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
-                    '<input type="text" id="' + element_id + 'site-address" placeholder="Site Address"/>' + token_elements + '</div>' +
+                    '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain' + domainClue + '.sharepoint.com)</p>' +
+                    '<input type="text" id="' + elementId + 'site-address" placeholder="Site Address"/>' + tokenElement + '</div>' +
                     '<a href="#" class="provision" aria-element="' + serviceName + '" ' + style + '>Connect to your ' + service.displayName + ' account</a>' +
                     '</div>';
                 }
