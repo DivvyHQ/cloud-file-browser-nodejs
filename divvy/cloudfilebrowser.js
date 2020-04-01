@@ -123,7 +123,7 @@ var CloudElements = (function() {
                         'order': servicesOrder[elementKey],
                         'service': elementKey,
                         'displayName': data[x].name,
-                        'image': envUrl+'images/'+data[x].image
+                        'image': 'https://s3.amazonaws.com/static.divvyhq.com/assets/cloudstorage/' + data[x].key + '.jpg'
                     });
                 }
             }
