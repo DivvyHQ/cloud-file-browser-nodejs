@@ -642,7 +642,7 @@ var server = (function() {
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["onedrivebusiness.site.address"] = cbArgs.elementDetails.siteAddress;
             } else if (element === 'sharepoint') {
-                elementProvision.configuration["oauth.scope"] = "AllSites.Manage";
+                elementProvision.configuration["oauth.scope"] = "Site.Read";
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["sharepoint.site.address"] = cbArgs.elementDetails.siteAddress;
