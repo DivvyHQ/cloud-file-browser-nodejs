@@ -218,20 +218,16 @@ var provision = (function() {
             //Step 2 : Check if API Key and Secret Exists, create an instance using those keys
             var elementDetails = _provision.getElementDetails(element);
             if(elementDetails != null && elementDetails != undefined) {
-
-                // if onedrivebusiness
                 if (element === 'onedrivebusiness' || element === 'sharepoint') {
+                    elementDetails.apiKey = cbArgs.apiKey;
+                    elementDetails.apiSecret = cbArgs.apiSecret;
+
                     var siteAddress = cbArgs.siteAddress;
                     if (!!siteAddress) {
                         elementDetails.siteAddress = siteAddress;
                     } else {
                         return;
                     }
-                }
-
-                if (element === 'sharepoint') {
-                    elementDetails.apiKey = cbArgs.apiKey;
-                    elementDetails.apiSecret = cbArgs.apiSecret;
                 }
 
                 var win = window.open('', '_target');
