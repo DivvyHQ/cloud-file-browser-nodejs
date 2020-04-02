@@ -31,7 +31,7 @@ var CloudElements = (function() {
             'dropbox': 'Dropbox',
             'googledrive': 'Google Drive',
             'onedrive': 'OneDrive',
-            'sharepoint': 'SharePoint'
+            'sharepoint': 'SharePoint',
         };
 
     return {
@@ -107,20 +107,27 @@ var CloudElements = (function() {
 
         initCallback: function(data, cbArgs) {
 
-            var docservices = [];
-            var docservicesnames = [];
-            var docservicesimages = [];
+            var servicesOrder = {
+                'box': 0,
+                'dropbox': 1,
+                'googledrive': 2,
+                'onedrivebusiness': 3,
+                'sharepoint': 4,
+            };
+            var servicesDetail = [];
 
             for (var x in data) {
                 var elementKey = data[x].key;
                 if (cedocumentconfig[elementKey] != null) {
-                    docservices.push(elementKey);
-                    docservicesnames.push(data[x].name);
-                    docservicesimages.push(envUrl+'images/'+data[x].image);
+                    servicesDetail.push({
+                        'order': servicesOrder[elementKey],
+                        'service': elementKey,
+                        'displayName': data[x].name,
+                        'image': 'https://s3.amazonaws.com/static.divvyhq.com/assets/cloudstorage/' + data[x].key + '.jpg'
+                    });
                 }
             }
-
-            cloudFileBrowser.init(docservices, docservicesnames, docservicesimages);
+            cloudFileBrowser.init(servicesDetail);
         },
 
         updateCallback: function(pagequery) {
@@ -211,9 +218,10 @@ var provision = (function() {
             //Step 2 : Check if API Key and Secret Exists, create an instance using those keys
             var elementDetails = _provision.getElementDetails(element);
             if(elementDetails != null && elementDetails != undefined) {
+                if (element === 'onedrivebusiness' || element === 'sharepoint') {
+                    elementDetails.apiKey = cbArgs.apiKey;
+                    elementDetails.apiSecret = cbArgs.apiSecret;
 
-                // if onedrivebusiness
-                if (element === 'onedrivebusiness') {
                     var siteAddress = cbArgs.siteAddress;
                     if (!!siteAddress) {
                         elementDetails.siteAddress = siteAddress;
@@ -221,7 +229,7 @@ var provision = (function() {
                         return;
                     }
                 }
-                
+
                 var win = window.open('', '_target');
 
                 var callbackArgs = {
@@ -597,7 +605,7 @@ var server = (function() {
                 'callbackUrl': callbackUrl,
             };
 
-            if (element === 'onedrivebusiness') {
+            if (element === 'onedrivebusiness' || element === 'sharepoint') {
                 // We get the siteAddress from element detail
                 // after provisioning
                 parameters.siteAddress = cbArgs.elementDetails.siteAddress;
@@ -629,6 +637,11 @@ var server = (function() {
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["onedrivebusiness.site.address"] = cbArgs.elementDetails.siteAddress;
+            } else if (element === 'sharepoint') {
+                elementProvision.configuration["oauth.scope"] = "Site.Read";
+                elementProvision.configuration["document.tagging"] = true;
+                elementProvision.configuration["filter.response.nulls"] = true;
+                elementProvision.configuration["sharepoint.site.address"] = cbArgs.elementDetails.siteAddress;
             }
 
             _server.call('api-v2/instances', 'POST',
@@ -682,8 +695,6 @@ var cloudFileBrowser = (function() {
 
     // PRIVATE VARIABLES
     var services = null,
-        servicesDisplay = null,
-        servicesImages = null,
         tabs = '#services-tabs',
         container = '#services-containers',
         selectedFiles = {},
@@ -691,13 +702,10 @@ var cloudFileBrowser = (function() {
 
     return {
 
-        init: function(srvs, srvsDis, srvsImages) {
-
+        init: function(servicesDetail) {
             // Initialize FilePicker script and build DOM elements
             // and setup binding methods
-            services = srvs;
-            servicesDisplay = srvsDis;
-            servicesImages = srvsImages;
+            services = servicesDetail;
 
             cloudFileBrowser.selectedFiles = {};
 
@@ -706,14 +714,16 @@ var cloudFileBrowser = (function() {
             this.bindProvisionButtons();
             this.initDragDropHandlers();
 
-            var firstElement = services[0];
+            var firstElement = services.find(function (service) {
+                return service.order === 0;
+            }).service;
 
             // This is a loop that runs validateToken over all of the
             // different CloudElements and deletes bad tokens
             var deferreds = [];
 
             for (var index in services) {
-                var check = CloudElements.validateToken(services[index]);
+                var check = CloudElements.validateToken(services[index].service);
                 deferreds.push(check);
             }
 
@@ -828,26 +838,68 @@ var cloudFileBrowser = (function() {
             // for each service installed
 
             var tabsHTML = '',
-                containerHTML = '';
-
-            for (var i=0; i<services.length; i++) {
-                tabsHTML += '<li class="' + services[i] + (i == 0 ? ' on' : '' )+ '"><img src="' + servicesImages[i] + '">' + servicesDisplay[i] + '</li>';
-                if (services[i] !== 'onedrivebusiness') {
-                    containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
+                containerHTML = '',
+                sortedServices = services.sort(function(a, b){
+                    return a.order - b.order;
+                });
+            sortedServices.map(function (service, index) {
+                var serviceName = service.service;
+                tabsHTML += '<li class="' + serviceName + (service.order == 0 ? ' on' : '' ) + '"><img src="' + service.image + '">' + service.displayName + '</li>';
+                if (serviceName !== 'onedrivebusiness' && serviceName !== 'sharepoint') {
+                    containerHTML +=    '<div class="' + serviceName + (index == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
                     '<h2></h2>' +
-                    '<h2><img src="' + servicesImages[i] + '"></h2>' +
-                    '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
+                    '<h2><img src="' + service.image + '"></h2>' +
+                    '<a href="#" class="provision" aria-element="' + serviceName + '">Connect to your ' + service.displayName + ' account</a>' +
                     '</div>';
                 } else {
-                    containerHTML +=    '<div class="' + services[i] + (i == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + services[i] + '">'+
-                    '<h2></h2>' +
-                    '<h2><img src="' + servicesImages[i] + '"></h2>' +
-                    '<div class="site-address-wrap"><p>OneDrive Business Site Addresss (domain-my.sharepoint.com)</p>' +
-                    '<input type="text" id="site-address"/></div>' +
-                    '<a href="#" class="provision" aria-element="' + services[i] + '">Connect to your ' + servicesDisplay[i] + ' account</a>' +
-                    '</div>';
+                    var text = 'OneDrive Business Site Addresss',
+                    spacing = '',
+                    element_id = '',
+                    token_elements = '',
+                    style = '';
+
+                    var buildedHTML = '';
+                    var sharePointConfigs = CloudElements.getConfig().sharepoint;
+
+                    if (serviceName === 'onedrivebusiness') {
+                        buildedHTML = '<div class="' + serviceName + (service.order == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
+                        '<h2></h2>' +
+                        '<h2><img src="' + service.image + '"></h2>' +
+                        '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
+                        '<input type="text" id="' + element_id + 'site-address" placeholder="Site Address"/>' + token_elements + '</div>' +
+                        '<a href="#" class="provision" aria-element="' + serviceName + '" ' + style + '>Connect to your ' + service.displayName + ' account</a>' +
+                        '</div>';
+                    }
+                    if (serviceName === 'sharepoint') {
+                        // SharePoint fields must be auto-filled. Because of this, they won't be visible for the user. The user should
+                        // only hit the Connect button.
+                        text = 'Share Point Site Addresss';
+                        spacing = '</br>';
+                        element_id = 'sp-';
+                        token_elements = '<div> <input type="text" id="client_key" placeholder="Client API Key" value="' + sharePointConfigs.apiKey + '" hidden></div>';
+                        token_elements += '<div> <input type="text" id="secret_key" placeholder="API Secret Key" value="' + sharePointConfigs.apiSecret + '" hidden></div>';
+                        style = 'style="margin-top: 110px"';
+                        buildedHTML = '<div class="' + serviceName + (service.order == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
+                        '<h2></h2>' +
+                        '<h2><img src="' + service.image + '"></h2>' +
+                        '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
+                        '<input type="text" id="' + element_id + 'site-address" placeholder="Site Address" value="' + sharePointConfigs.siteAddress + '" hidden/>' + token_elements + '</div>' +
+                        '<a href="#" class="provision" aria-element="' + serviceName + '" ' + style + '>Connect to your ' + service.displayName + ' account</a>' +
+                        '</div>';
+
+                        // Check if there parameters have been set on the initialization.
+                        if (!sharePointConfigs.siteAddress) {
+                            // If SharePoint is selected and it hasn't been configured by an Admin, do not allow the user to continue.
+                            buildedHTML =    '<div class="' + serviceName + (index == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
+                            '<h2></h2>' +
+                            '<h2><img src="' + service.image + '"></h2>' +
+                            '<div class="site-address-wrap">Want to access Sharepoint? Ask your GA to enable it via the Integration Admin.</div>';
+                        }
+                    }
+
+                    containerHTML += buildedHTML;
                 }
-            }
+            });
 
             $(tabs).append(tabsHTML);
             $(container).append(containerHTML);
@@ -878,8 +930,10 @@ var cloudFileBrowser = (function() {
                 $('div.on, li.on').removeClass('on');
                 $(this).addClass('on');
                 $(container + ' > div').eq(index).addClass('on');
-
-                cloudFileBrowser.initElement(services[index]);
+                var element = services.find(function(srv) {
+                    return srv.order === index;
+                }).service;
+                cloudFileBrowser.initElement(element);
 
             });
         },
@@ -997,11 +1051,17 @@ var cloudFileBrowser = (function() {
             // Note -- Demo only, always returns successful
 
             cloudFileBrowser.showLoading();
-
+            var siteAddress = $(container).find('#site-address').val();
             var callbackArgs = {
                 'element' : element,
-                'siteAddress': $(container).find('#site-address').val()
+                'siteAddress': siteAddress,
             };
+            if (element === 'sharepoint') {
+                callbackArgs['siteAddress'] = $(container).find('#sp-site-address').val();
+                callbackArgs['apiKey'] = $(container).find('#client_key').val();
+                callbackArgs['apiSecret'] = $(container).find('#secret_key').val();
+            }
+
             provision.createInstance(element, cloudFileBrowser.handleOnProvision, callbackArgs);
         },
 
@@ -1039,7 +1099,7 @@ var cloudFileBrowser = (function() {
                 this.disableSearchOpen();
                 $("#js-search-box-form-wrapper").show();
                 $('#js-search-box').val(keyword);
-            }            
+            }
 
             this.animateTable(element);
             this.bindFileDragDrop(element, path);
