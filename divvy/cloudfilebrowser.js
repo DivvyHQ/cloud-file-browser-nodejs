@@ -609,6 +609,9 @@ var server = (function() {
                 // We get the siteAddress from element detail
                 // after provisioning
                 parameters.siteAddress = cbArgs.elementDetails.siteAddress;
+
+                // Make sure to request Write access to SharePoint Site Web
+                parameters.scope = "Web.Write";
             }
 
             _server.call('api-v2/elements/'+element+'/oauth/url', 'Get',
