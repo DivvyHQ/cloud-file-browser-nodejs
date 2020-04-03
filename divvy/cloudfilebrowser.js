@@ -123,7 +123,7 @@ var CloudElements = (function() {
                         'order': servicesOrder[elementKey],
                         'service': elementKey,
                         'displayName': data[x].name,
-                        'image': 'https://s3.amazonaws.com/static.divvyhq.com/assets/cloudstorage/' + data[x].key + '.jpg'
+                        'image': 'https://s3.amazonaws.com/static.divvyhq.com/assets/cloudstorage/' + data[x].key + '.png'
                     });
                 }
             }
@@ -638,7 +638,7 @@ var server = (function() {
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["onedrivebusiness.site.address"] = cbArgs.elementDetails.siteAddress;
             } else if (element === 'sharepoint') {
-                elementProvision.configuration["oauth.scope"] = "Site.Read";
+                elementProvision.configuration["oauth.scope"] = "Web.Write";
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["sharepoint.site.address"] = cbArgs.elementDetails.siteAddress;
