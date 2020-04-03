@@ -855,7 +855,7 @@ var cloudFileBrowser = (function() {
                     '<a href="#" class="provision" aria-element="' + serviceName + '">Connect to your ' + service.displayName + ' account</a>' +
                     '</div>';
                 } else {
-                    var text = 'OneDrive Business Site Addresss',
+                    var text = 'OneDrive for Business Site Addresss',
                     spacing = '',
                     element_id = '',
                     token_elements = '',
@@ -876,16 +876,13 @@ var cloudFileBrowser = (function() {
                     if (serviceName === 'sharepoint') {
                         // SharePoint fields must be auto-filled. Because of this, they won't be visible for the user. The user should
                         // only hit the Connect button.
-                        text = 'Share Point Site Addresss';
-                        spacing = '</br>';
                         element_id = 'sp-';
                         token_elements = '<div> <input type="text" id="client_key" placeholder="Client API Key" value="' + sharePointConfigs.apiKey + '" hidden></div>';
                         token_elements += '<div> <input type="text" id="secret_key" placeholder="API Secret Key" value="' + sharePointConfigs.apiSecret + '" hidden></div>';
                         style = 'style="margin-top: 110px"';
                         buildedHTML = '<div class="' + serviceName + (service.order == 0 ? ' on' : '' ) + ' drop-zone" aria-element="' + serviceName + '">'+
                         '<h2></h2>' +
-                        '<h2><img src="' + service.image + '"></h2>' +
-                        '<div class="site-address-wrap">' + spacing + '<p>' + text + ' (domain-my.sharepoint.com)</p>' +
+                        '<h2><img src="' + service.image + '"></h2><div class="site-address-wrap">' +
                         '<input type="text" id="' + element_id + 'site-address" placeholder="Site Address" value="' + sharePointConfigs.siteAddress + '" hidden/>' + token_elements + '</div>' +
                         '<a href="#" class="provision" aria-element="' + serviceName + '" ' + style + '>Connect to your ' + service.displayName + ' account</a>' +
                         '</div>';
