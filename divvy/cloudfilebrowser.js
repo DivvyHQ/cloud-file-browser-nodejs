@@ -219,8 +219,10 @@ var provision = (function() {
             var elementDetails = _provision.getElementDetails(element);
             if(elementDetails != null && elementDetails != undefined) {
                 if (element === 'onedrivebusiness' || element === 'sharepoint') {
-                    elementDetails.apiKey = cbArgs.apiKey;
-                    elementDetails.apiSecret = cbArgs.apiSecret;
+                    if (element === 'sharepoint') {
+                        elementDetails.apiKey = cbArgs.apiKey;
+                        elementDetails.apiSecret = cbArgs.apiSecret;
+                    }
 
                     var siteAddress = cbArgs.siteAddress;
                     if (!!siteAddress) {
