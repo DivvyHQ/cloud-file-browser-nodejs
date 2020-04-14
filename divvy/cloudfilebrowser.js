@@ -217,10 +217,17 @@ var provision = (function() {
 
             //Step 2 : Check if API Key and Secret Exists, create an instance using those keys
             var elementDetails = _provision.getElementDetails(element);
-            if(elementDetails != null && elementDetails != undefined) {
+            if (elementDetails != null && elementDetails != undefined) {
                 if (element === 'onedrivebusiness' || element === 'sharepoint') {
-                    elementDetails.apiKey = cbArgs.apiKey;
-                    elementDetails.apiSecret = cbArgs.apiSecret;
+                    // These two cbArgs key are provided from within Divvy's
+                    // app and will not be present UNLESS the call is for Sharepoint.
+                    // However, the cbArgs.siteAddress is set for both ODFB and SP.
+                    // So we add an extra check inside of this if-statement to look
+                    // specifically for SP.
+                    if (element === 'sharepoint') {
+                        elementDetails.apiKey = cbArgs.apiKey;
+                        elementDetails.apiSecret = cbArgs.apiSecret;
+                    }
 
                     var siteAddress = cbArgs.siteAddress;
                     if (!!siteAddress) {
@@ -641,7 +648,6 @@ var server = (function() {
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["onedrivebusiness.site.address"] = cbArgs.elementDetails.siteAddress;
             } else if (element === 'sharepoint') {
-                elementProvision.configuration["oauth.scope"] = "Web.Write";
                 elementProvision.configuration["document.tagging"] = true;
                 elementProvision.configuration["filter.response.nulls"] = true;
                 elementProvision.configuration["sharepoint.site.address"] = cbArgs.elementDetails.siteAddress;
